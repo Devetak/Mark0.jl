@@ -1,6 +1,6 @@
 # Mark0.jl
 
-A Julia implementation of the Mark0 model without a central bank.Bbased on the original C++ code avaiable at [Mark0 C++ (GitLab)](https://gitlab.com/sharma.dhruv/markovid).
+A Julia implementation of the Mark0 model without a central bank. Based on the original C++ code avaiable at [Mark0 C++ (GitLab)](https://gitlab.com/sharma.dhruv/markovid).
 
 ```julia
     using Pkg
