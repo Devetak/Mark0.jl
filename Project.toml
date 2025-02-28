@@ -1,0 +1,10 @@
+name = "Mark0"
+uuid = "c16647c0-164c-4a84-961c-1e0ef4baeda8"
+authors = ["Mitja Devetak <m888itja@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[compat]
+Random = "1.11.0"

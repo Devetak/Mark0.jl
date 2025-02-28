@@ -1,0 +1,23 @@
+# Ignore Julia project artifacts and temp files
+Manifest.toml
+.julia/
+.julia_history
+.julia_log
+.juliaup/
+.DS_Store
+*.jl.cov
+*.jl.mem
+*.jl.gcda
+*.jl.gcno
+*.vscode/
+.idea/
+*.ipynb_checkpoints
+__pycache__/
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Editor/OS-specific files
+*.swp
+
