@@ -2,8 +2,8 @@ module Mark0
 
 export getParameters, mark0_noCB
 
-using UnPack
 using Random
+using UnPack
 
 """
     Get Default Parameters of C++ code hosted at https://gitlab.com/sharma.dhruv/markovid
