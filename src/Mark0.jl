@@ -63,10 +63,10 @@ function mark0_noCB(rng, par, N, maxIter, cutOff = 0)
     tmp = zero(typeof(C0))
 
     for i = 1:N
-        price[i] = one(typeof(C0)) + (0.02) * rand(typeof(C0)) - 0.01
-        production[i] = 0.5 + (0.02) * rand(typeof(C0)) - 0.01
+        price[i] = one(typeof(C0)) + (0.02) * rand(rng, typeof(C0)) - 0.01
+        production[i] = 0.5 + (0.02) * rand(rng, typeof(C0)) - 0.01
         profit[i] = price[i] * min(production[i], demand[i]) - wage[i] * production[i]
-        assets[i] = 2 * production[i] * wage[i] * rand(typeof(C0))
+        assets[i] = 2 * production[i] * wage[i] * rand(rng, typeof(C0))
         Wtot += wage[i] * production[i]
         Ytot += production[i]
         tmp += price[i] * production[i]
@@ -154,8 +154,8 @@ function mark0_noCB(rng, par, N, maxIter, cutOff = 0)
                         ren = zero(typeof(Gamma))
                     end
 
-                    rp = gammap * rand()
-                    rw = gammaw * rand()
+                    rp = gammap * rand(rng)
+                    rw = gammaw * rand(rng)
 
                     excessDemand = demand[i] - production[i]
 
@@ -310,9 +310,9 @@ function mark0_noCB(rng, par, N, maxIter, cutOff = 0)
         # revival turn
         deftot = zero(typeof(deftot))
         for i in eachindex(alive)
-            if !alive[i] && rand() < phi
+            if !alive[i] && rand(rng) < phi
                 alive[i] = true
-                production[i] = u * rand() # max.(u, 0) * rand() ?
+                production[i] = u * rand(rng) # max.(u, 0) * rand(rng) ?
                 price[i] = Pavg
                 wage[i] = Wavg
                 assets[i] = Wavg * production[i]
