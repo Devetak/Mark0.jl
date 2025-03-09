@@ -6,7 +6,8 @@ using Random
 using UnPack
 
 """
-    Get Default Parameters of C++ code hosted at https://gitlab.com/sharma.dhruv/markovid
+    Get Default Parameters of original C++ code hosted at
+    https://gitlab.com/sharma.dhruv/markovid
 """
 function getParameters()
     return (rho0 = 0.005, theta = 2.0, Gamma0 = 50.0, 
