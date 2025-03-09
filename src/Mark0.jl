@@ -3,48 +3,37 @@ module Mark0
 export getParameters, mark0_noCB
 
 using Random
+using UnPack
 
 """
-    Get Default Parameters from C++ code.
+    Get Default Parameters of original C++ code hosted at
+    https://gitlab.com/sharma.dhruv/markovid
 """
 function getParameters()
-    return [0.005, 2.0, 50.0, 0.5, 2.0, 1.0, 0.1, 0.1, 0.5, 0.02, 2.0, 0.5, 0.1, 0.2]
-    # rho0, theta, Gamma0, C0,  R,  r,  gammap, eta0m, bankrupcyEffect, delta, beta, tau_meas, phi, taupi
+    return (rho0 = 0.005, theta = 2.0, Gamma0 = 50.0, 
+            C0 = 0.5, R = 2.0, r = 1.0, gammap = 0.1, 
+            eta0m = 0.1, bankrupcyEffect = 0.5, delta = 0.02, 
+            beta = 2.0, tau_meas = 0.5, phi = 0.1, taupi = 0.2)
 end
 
 """
-
     mark0_noCB(par, N, seed, maxIter)
 
     Implements mark0 with no central bank. 
     
-    Assumes initial porduction(y0) is 0.5
+    Assumes initial production(y0) is 0.5
     Assumes Gammas is 0.0
     Assumes real rate effect on consumption(alpha) is 4.0 
     Assumes factor to adjust wages to inflation expectations is 1.0
-
 """
-function mark0_noCB(par, N, seed, maxIter, cutOff = 0)
+mark0_noCB(par, N, maxIter, cutOff = 0) = mark0_noCB(Random.default_rng(), par, N, maxIter, cutOff)
+function mark0_noCB(rng::AbstractRNG, par, N, maxIter, cutOff = 0)
 
-    # set seed
-    Random.seed!(seed)
-
-    # unpack parameters vector
-    rho0 = par[1]
-    theta = par[2]
-    Gamma0 = par[3]
-    C0 = par[4] # assumed between 0 and 1
-    R = par[5]
-    r = par[6]
-    gammap = par[7]
-    eta0m = par[8]
-    bankrupcyEffect = par[9]
-    delta = par[10]
-    beta = par[11]
-    tau_meas = par[12]
-    phi = par[13]
-    taupi = par[14]
-
+    # unpack parameters namedtuple
+    @unpack rho0, theta, Gamma0, C0, R, r, gammap, eta0m, 
+            bankrupcyEffect, delta, beta, tau_meas, phi,
+            taupi = par
+    
     # generate parameter variables
     ao = one(typeof(C0))
     M0 = ao * N
@@ -75,10 +64,10 @@ function mark0_noCB(par, N, seed, maxIter, cutOff = 0)
     tmp = zero(typeof(C0))
 
     for i = 1:N
-        price[i] = one(typeof(C0)) + (0.02) * rand(typeof(C0)) - 0.01
-        production[i] = 0.5 + (0.02) * rand(typeof(C0)) - 0.01
+        price[i] = one(typeof(C0)) + (0.02) * rand(rng, typeof(C0)) - 0.01
+        production[i] = 0.5 + (0.02) * rand(rng, typeof(C0)) - 0.01
         profit[i] = price[i] * min(production[i], demand[i]) - wage[i] * production[i]
-        assets[i] = 2 * production[i] * wage[i] * rand(typeof(C0))
+        assets[i] = 2 * production[i] * wage[i] * rand(rng, typeof(C0))
         Wtot += wage[i] * production[i]
         Ytot += production[i]
         tmp += price[i] * production[i]
@@ -93,7 +82,6 @@ function mark0_noCB(par, N, seed, maxIter, cutOff = 0)
     S = e * N
     bust = 0
     revived = zeros(maxIter)
-
 
     # fix total ammount of money to be N
     tmp = sum(assets) + S
@@ -167,8 +155,8 @@ function mark0_noCB(par, N, seed, maxIter, cutOff = 0)
                         ren = zero(typeof(Gamma))
                     end
 
-                    rp = gammap * rand()
-                    rw = gammaw * rand()
+                    rp = gammap * rand(rng)
+                    rw = gammaw * rand(rng)
 
                     excessDemand = demand[i] - production[i]
 
@@ -323,9 +311,9 @@ function mark0_noCB(par, N, seed, maxIter, cutOff = 0)
         # revival turn
         deftot = zero(typeof(deftot))
         for i in eachindex(alive)
-            if !alive[i] && rand() < phi
+            if !alive[i] && rand(rng) < phi
                 alive[i] = true
-                production[i] = u * rand() # max.(u, 0) * rand() ?
+                production[i] = u * rand(rng) # max.(u, 0) * rand(rng) ?
                 price[i] = Pavg
                 wage[i] = Wavg
                 assets[i] = Wavg * production[i]
@@ -379,8 +367,6 @@ function mark0_noCB(par, N, seed, maxIter, cutOff = 0)
     end
 
     return unemploymentTimeSeries
-
 end
-
 
 end # module Mark0
