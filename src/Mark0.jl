@@ -28,7 +28,6 @@ end
 mark0_noCB(par, N, maxIter, cutOff = 0) = mark0_noCB(Random.default_rng(), par, N, maxIter, cutOff)
 function mark0_noCB(rng::AbstractRNG, par, N, maxIter, cutOff = 0)
 
-    println(par)
     # unpack parameters namedtuple
     @unpack rho0, theta, Gamma0, C0, R, r, gammap, eta0m, 
             bankrupcyEffect, delta, beta, tau_meas, phi,
